@@ -1,0 +1,62 @@
+// InputField to add text and display them as items in a view in list manner ✅🙌💎🍒👋
+so far covered useState, FlatList, onChangeText, onPress
+
+import { useState } from 'react'; // to manage the changes made in input field, all list items
+import { StatusBar } from 'expo-status-bar'; // to manually change the styles of statusbar
+import { StyleSheet, Text, TextInput, View, Button, FlatList } from 'react-native';
+// flatList to render only things that are visible right now if scrolled further we will load more date( more efficient in terms of performance than ListItems)
+
+export default function App() {
+  const [enteredText, setEnteredText] = useState('');
+  // for text we input in TextInput field
+  const [allItems, setAllItems] = useState([]);
+  // to store array of objects where each object contains value with unique id
+  function handleTextChange(textWroteInInputField){
+    setEnteredText(textWroteInInputField);
+  }
+  // function to change text each we time we type in TextInput
+  function addText(){
+    setAllItems((allItems)=>[...allItems, {value: enteredText, id: Math.random().toString()}]);
+  }
+  // function to add existing items with the new item into the array of objects
+  return (
+    <View style={styles.container}>
+    <View style={styles.textInputWithButton}>
+    <TextInput placeholder={"search"} style={styles.textInput} onChangeText={handleTextChange}/>
+    {/* OnChangeText is used to point to an function without using () otherwise that function will run immediately */}
+    <Button title={"Submit"} onPress={addText}/>
+    {/* onPress button to add item into the array of objects */}
+    </View>
+    <View style={styles.itemsView}>
+    {/* data should take a collection as parameter, renderItem should take a function as parameter to render each item & inside that function it actually takes an object(itemData is an object), here itemData is object, item is each child of that and value is the property of each child */}
+    <FlatList showsVerticalScrollIndicator={false} data={allItems} renderItem={(itemData)=>{
+      return <Text style={{marginBottom: 20}}>{itemData.item.value}</Text>
+    }} keyExtractor={(item, index)=> {return item.id}}/>
+    {/* KeyExtractor is required to uniquely identify each item where we should pass 2 parameters item and index */}
+    </View>
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+    marginHorizontal: 50,
+    marginTop: 100
+  },
+  textInputWithButton: {
+    flexDirection: 'row',
+  },
+  textInput: {
+    borderWidth: 1, borderColor: 'black', width: '100%'
+  },
+  itemsView: {
+    marginTop: 20,
+    alignSelf: 'stretch',
+    borderTopWidth: 1,
+    borderColor: 'black'
+  }
+});
